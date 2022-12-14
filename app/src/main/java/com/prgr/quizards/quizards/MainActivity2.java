@@ -24,7 +24,9 @@ public class MainActivity2 extends AppCompatActivity {
     private TextInputEditText desc;
     private TextInputEditText amt;
     private SharedPreferences jshared;
-
+    private SharedPreferences jshared2;
+    private HashMap<String, Object> qtest = new HashMap<>();
+    private ArrayList<HashMap<String, Object>> amap = new ArrayList<>();
     public MainActivity2() {
     }
 
@@ -75,12 +77,24 @@ protected void onCreate(Bundle savedInstanceState) {
         title = findViewById(R.id.quizname);
         desc = findViewById(R.id.desc);
         amt = findViewById(R.id.amount);
-        jshared = getSharedPreferences("QData", Activity.MODE_PRIVATE);
+        jshared = getSharedPreferences("Q-TDA_DATA-SET-1", Activity.MODE_PRIVATE);
+        jshared2 = getSharedPreferences("Q-TDA_MAPD-SET-1", Activity.MODE_PRIVATE);
     }
     private void gotom3(){
-            jshared.edit().putString("quizname", title.getText().toString()).apply();
-            jshared.edit().putString("desc", desc.getText().toString()).apply();
-            jshared.edit().putString("amount", amt.getText().toString()).apply();
+        //Values
+         jshared.edit().putString("quizname", title.getText().toString()).apply();
+         jshared.edit().putString("desc", desc.getText().toString()).apply();
+         jshared.edit().putString("amount", amt.getText().toString()).apply();
+
+         //Get Data
+        qtest = new HashMap<>();
+        qtest.put("title", jshared.getString("quizname",""));
+        qtest.put("Description", jshared.getString("desc",""));
+        qtest.put("AQA", jshared.getString("amount",""));
+        SCodeUtil.MaptoListMap(qtest, amap);
+        jshared2.edit().putString("Q-TDA", new Gson().toJson(amap)).commit();
+        SCodeUtil.CustomToast(getApplicationContext(), "Quiz Amount: "+amap.get(0).get("AQA").toString(),0xffffffff, 15, 0xff212121,10, 3);
+        //Move to new page
         Intent intent = new Intent(this, MainActivity3.class);
         startActivity(intent);
     }

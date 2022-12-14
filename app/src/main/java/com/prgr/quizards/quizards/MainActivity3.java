@@ -43,6 +43,7 @@ public class MainActivity3 extends AppCompatActivity {
     private ArrayList<HashMap<String, Object>> qmap = new ArrayList<>();
     private int val;
     private SharedPreferences jshared;
+    private SharedPreferences jsharedq;
     private int dat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class MainActivity3 extends AppCompatActivity {
         btn2.setOnClickListener(v -> back());
         qa.setEnabled(false);
         SCodeDesign.ExportDesign(qa, false);
+        jsharedq = getSharedPreferences("Q-QA_DATA-SET-2", Activity.MODE_PRIVATE);
     }
     private void tools(){
         // Tools to define stuff
@@ -81,7 +83,7 @@ public class MainActivity3 extends AppCompatActivity {
         val = 0;
 
         // 3rd Page
-        jshared = getSharedPreferences("QData", Activity.MODE_PRIVATE);
+        jshared = getSharedPreferences("Q-TDA_MAPD-SET-1", Activity.MODE_PRIVATE);
         answer = findViewById(R.id.ans);
         count = findViewById(R.id.text3);
        // Map<String,Object> result = new ObjectMapper().readValue(JSON_SOURCE, HashMap.class);
@@ -95,17 +97,7 @@ public class MainActivity3 extends AppCompatActivity {
 
 
     //Design
-    private void logic(){
-        ConstraintLayout iqa = findViewById(R.id.iqa);
-        ConstraintLayout qa = findViewById(R.id.qa);
-        if(iqa.isEnabled()){
-            SCodeDesign.ExportDesign(iqa, false);
-            SCodeDesign.ExportDesign(qa, true);
-        }else{
-            SCodeDesign.ExportDesign(iqa, true);
-            SCodeDesign.ExportDesign(qa, false);
-        }
-    }
+
     private void back(){
         ConstraintLayout qa = findViewById(R.id.qa);
         ConstraintLayout iqa = findViewById(R.id.iqa);
@@ -121,27 +113,40 @@ public class MainActivity3 extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity2.class);
         startActivity(intent);
     }
-
-    //Page Mover
-    public void met(){
+    private void logic(){
         String ca = jshared.getString("amount", "");
         dat = Integer.parseInt(ca);
         boolean b = val == dat;
         if(b){
             //Data Collector Logic
+            jshared.edit().putString("QUES", new Gson().toJson(qmap)).commit();
+            SCodeUtil.CustomToast(getApplicationContext(), "hello", 0xffffffff, 15,0xff212121,10,3);
+        }else{
             que = new HashMap<>();
             que.put("question", quest.getText().toString());
             que.put("answer", input.getText().toString());
             SCodeUtil.MaptoListMap(que, qmap);
             que.clear();
-
+            val++;
             //Value Indicator
             String up = Integer.toString(val);
             String note = up + " / " + ca;
             icount.setText(note);
-        }else{
-
         }
+        //        ConstraintLayout iqa = findViewById(R.id.iqa);
+//        ConstraintLayout qa = findViewById(R.id.qa);
+//        if(iqa.isEnabled()){
+//            SCodeDesign.ExportDesign(iqa, false);
+//            SCodeDesign.ExportDesign(qa, true);
+//        }else{
+//            SCodeDesign.ExportDesign(iqa, true);
+//            SCodeDesign.ExportDesign(qa, false);
+//        }
+//    }
+    }
+    //Page Mover
+    public void met(){
+
 //        Intent intent = new Intent(this, MainActivity4.class);
 //        startActivity(intent);
     }
